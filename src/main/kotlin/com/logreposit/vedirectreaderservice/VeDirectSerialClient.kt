@@ -36,12 +36,10 @@ class VeDirectSerialClient(device: String) {
 
     fun register(veDirectEventListener: VeDirectEventListener) = eventListeners.add(veDirectEventListener)
 
-    fun open() {
-        configureSerialPort(serialPort)
-        serialPort.openPort()
-    }
+    fun startListening() {
+        closeSerialPort()
+        openSerialPort()
 
-    fun readData() {
         while (true) {
             val bytesAvailable = serialPort.bytesAvailable()
 
@@ -57,6 +55,17 @@ class VeDirectSerialClient(device: String) {
                 processByte(b)
             }
         }
+    }
+
+    private fun closeSerialPort() {
+        if (serialPort != null && serialPort.isOpen) {
+            serialPort.closePort()
+        }
+    }
+
+    private fun openSerialPort() {
+        configureSerialPort(serialPort)
+        serialPort.openPort()
     }
 
     fun sendCommand(byteArray: ByteArray): Int {
@@ -103,18 +112,18 @@ class VeDirectSerialClient(device: String) {
 
         inputBuffer.clear() // TODO DoM: Added
 
-        println("HEX Response is complete (LF), content: ${String(hexBuffer.toByteArray())}")
+        logger.debug("HEX Response is complete (LF), content: ${String(hexBuffer.toByteArray())}")
 
         val parsedCommand = hexMsgToByteArray()
 
-        println("parsedCommand: $parsedCommand")
+        logger.debug("parsedCommand: $parsedCommand")
 
         val validChecksum = isValidChecksum(parsedCommand)
 
         if (validChecksum) {
-            println("VALID HEX CHECKSUM :D")
+            logger.debug("VALID HEX CHECKSUM :D")
         } else {
-            println("INVALID HEX CHECKSUM!! :'(")
+            logger.debug("INVALID HEX CHECKSUM!! :'(")
         }
 
         state = ReaderState.BEGIN

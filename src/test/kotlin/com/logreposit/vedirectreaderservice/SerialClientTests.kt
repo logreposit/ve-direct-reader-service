@@ -1,14 +1,33 @@
 package com.logreposit.vedirectreaderservice
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import kotlin.concurrent.thread
 
 class SerialClientTests {
-
     class MyListener : VeDirectEventListener {
+        private val log = logger()
+
         override fun onVeDirectTextProtocolUpdate(textData: Map<String, String>) {
-            println("Listening to Event: $textData")
+            val dateTime = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
+
+            log.info("$dateTime => Received VE.Direct Text Protocol Event: $textData")
         }
+    }
+
+    private val log = logger()
+
+    @Test
+    fun `test smth`() {
+        var myVeField = VeDirectField.resolve("V")
+
+        assertThat(myVeField).isEqualTo(VeDirectField.V)
+
+        var mySecondVeField = VeDirectField.resolve("BLAH")
+
+        assertThat(mySecondVeField).isEqualTo(VeDirectField.V)
     }
 
     @Test
@@ -17,13 +36,24 @@ class SerialClientTests {
             it.register(MyListener())
         }
 
-        serialClient.open()
-
         thread {
-            serialClient.readData()
+            serialClient.startListening()
         }
 
-        //Thread.sleep(15000)
+        while (true) { }
+    }
+
+    @Test
+    fun `test read from serial line per line with additional command sending`() {
+        val serialClient = VeDirectSerialClient(device = "/dev/tty.usbserial-VE2OV1G5").also {
+            it.register(MyListener())
+        }
+
+        thread {
+            serialClient.startListening()
+        }
+
+        Thread.sleep(15000)
 
         var i = 0;
 
@@ -36,9 +66,9 @@ class SerialClientTests {
             Thread.sleep(1000)
 
             if (i == 8) {
-                print("ACTION! ==> ")
+                log.debug("ACTION! ==> ")
                 val bytesSent = serialClient.sendCommand(commandBytes)
-                println("Sent bytes: $bytesSent")
+                log.debug("Sent bytes: $bytesSent")
 
                 i = 0
             }
