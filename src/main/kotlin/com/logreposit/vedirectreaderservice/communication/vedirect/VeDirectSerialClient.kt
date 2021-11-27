@@ -1,13 +1,16 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import com.fazecast.jSerialComm.SerialPort
+import com.logreposit.vedirectreaderservice.configuration.VeDirectConfiguration
 import com.logreposit.vedirectreaderservice.logger
+import org.springframework.stereotype.Service
 
 interface VeDirectEventListener {
     fun onVeDirectTextProtocolUpdate(textData: Map<String, String>)
 }
 
-class VeDirectSerialClient(device: String) {
+@Service
+class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
     private enum class ReaderState {
         BEGIN, LABEL, VALUE, CHECKSUM, HEX
@@ -31,7 +34,7 @@ class VeDirectSerialClient(device: String) {
 
     private val resultMap = mutableMapOf<String, String>()
 
-    private val serialPort = SerialPort.getCommPort(device)
+    private val serialPort: SerialPort = SerialPort.getCommPort(veDirectConfiguration.comPort)
 
     private var state: ReaderState = ReaderState.BEGIN
 
@@ -59,13 +62,13 @@ class VeDirectSerialClient(device: String) {
     }
 
     private fun closeSerialPort() {
-        if (serialPort != null && serialPort.isOpen) {
+        if (serialPort.isOpen) {
             serialPort.closePort()
         }
     }
 
     private fun openSerialPort() {
-        configureSerialPort(serialPort)
+        configureSerialPort()
         serialPort.openPort()
     }
 
@@ -73,7 +76,7 @@ class VeDirectSerialClient(device: String) {
         return serialPort.writeBytes(byteArray, byteArray.size.toLong())
     }
 
-    private fun configureSerialPort(serialPort: SerialPort) {
+    private fun configureSerialPort() {
         serialPort.baudRate = 19200
         serialPort.numDataBits = 8
         serialPort.numStopBits = 1

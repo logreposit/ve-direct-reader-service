@@ -1,26 +1,40 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
-abstract class VeDirectReading<out T>(private val field: VeDirectField, private val value: T) {
-    fun getValue(): T = value
+sealed class VeDirectReading<out T>(val field: VeDirectField, val value: T) {
+    open fun getTextRepresentation(): String? = null
 }
 
-class VeDirectNumberReading(field: VeDirectField, value: Long) : VeDirectReading<Long>(field, value)
+class VeDirectNumberReading(field: VeDirectField, value: Long) : VeDirectReading<Long>(field, value) {
+    override fun getTextRepresentation(): String? {
+        return when (field) {
+            VeDirectField.OR -> VeDirectOffReason.resolve(value).toString()
+            VeDirectField.CS -> VeDirectOperationState.resolve(value).toString()
+            VeDirectField.ERR -> VeDirectError.resolve(value).toString()
+            VeDirectField.MODE -> VeDirectDeviceMode.resolve(value).toString()
+            VeDirectField.MPPT -> VeDirectMpptTrackerOperationMode.resolve(value).toString()
+            VeDirectField.MON -> VeDirectDcMonitorMode.resolve(value).toString()
+            else -> null
+        }
+    }
+}
+
 class VeDirectOnOffReading(field: VeDirectField, value: Boolean) : VeDirectReading<Boolean>(field, value)
 class VeDirectTextReading(field: VeDirectField, value: String) : VeDirectReading<String>(field, value)
 
-//sealed class VeDirectReading(private val field: VeDirectField)
-//
-//class VeDirectNumberReading(field: VeDirectField, private val value: Long) : VeDirectReading(field)
-//class VeDirectOnOffReading(field: VeDirectField, private val value: Boolean) : VeDirectReading(field)
-//class VeDirectTextReading(field: VeDirectField, private val value: String) : VeDirectReading(field)
+enum class VeDirectValueType {
+    NUMBER,
+    ON_OFF,
+    TEXT,
+    HEX
+}
 
-enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, logrepositName: String) {
+enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, val logrepositName: String) {
     V("V", VeDirectValueType.NUMBER, "battery_voltage"),
     V2("V2", VeDirectValueType.NUMBER, "battery_voltage_2"),
     V3("V3", VeDirectValueType.NUMBER, "battery_voltage_3"),
     VS("VS", VeDirectValueType.NUMBER, "auxiliary_voltage"),
     VM("VM", VeDirectValueType.NUMBER, "mid_point_battery_voltage"),
-    DM("DM", VeDirectValueType.NUMBER, "mid_point_battery_deviation"), // TODO: maybe `mid_point_battery_voltage_deviation ??`
+    DM("DM", VeDirectValueType.NUMBER, "mid_point_battery_deviation"),
     VPV("VPV", VeDirectValueType.NUMBER, "panel_voltage"),
     PPV("PPV", VeDirectValueType.NUMBER, "panel_power"),
     I("I", VeDirectValueType.NUMBER, "battery_current"),
@@ -29,7 +43,7 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, l
     IL("IL", VeDirectValueType.NUMBER, "load_current"),
     LOAD("LOAD", VeDirectValueType.ON_OFF, "load_output_state"),
     T("T", VeDirectValueType.NUMBER, "battery_temperature"),
-    P("P", VeDirectValueType.NUMBER, ""), // TODO: find a name!
+    P("P", VeDirectValueType.NUMBER, "instantaneous_power"),
     CE("CE", VeDirectValueType.NUMBER, "consumed_energy"),
     SOC("SOC", VeDirectValueType.NUMBER, "state_of_charge"),
     TTG("TTG", VeDirectValueType.NUMBER, "time_to_go"),
@@ -53,19 +67,19 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, l
     H14("H14", VeDirectValueType.NUMBER, "number_high_auxiliary_battery_voltage_alarms"),
     H15("H15", VeDirectValueType.NUMBER, "min_auxiliary_battery_voltage"),
     H16("H16", VeDirectValueType.NUMBER, "max_auxiliary_battery_voltage"),
-    H17("H17", VeDirectValueType.NUMBER, ""), // TODO: find a name!
-    H18("H18", VeDirectValueType.NUMBER, ""), // TODO: find a name!
-    H19("H19", VeDirectValueType.NUMBER, "yield_total"), // TODO: find a better name?
-    H20("H20", VeDirectValueType.NUMBER, "yield_today"), // TODO: find a better name?
-    H21("H21", VeDirectValueType.NUMBER, "max_power_today"), // TODO: find a better name?
-    H22("H22", VeDirectValueType.NUMBER, "yield_yesterday"), // TODO: find a better name?
-    H23("H23", VeDirectValueType.NUMBER, "max_power_yesterday"), // TODO: find a better name?
+    H17("H17", VeDirectValueType.NUMBER, "discharged_energy"),
+    H18("H18", VeDirectValueType.NUMBER, "charged_energy"),
+    H19("H19", VeDirectValueType.NUMBER, "yield_total"),
+    H20("H20", VeDirectValueType.NUMBER, "yield_today"),
+    H21("H21", VeDirectValueType.NUMBER, "max_power_today"),
+    H22("H22", VeDirectValueType.NUMBER, "yield_yesterday"),
+    H23("H23", VeDirectValueType.NUMBER, "max_power_yesterday"),
     ERR("ERR", VeDirectValueType.NUMBER, "error_code"),
     CS("CS", VeDirectValueType.NUMBER, "operation_state"),
-    BMV("BMV", VeDirectValueType.TEXT, "bmv_model"), // deprecated
-    FW("FW", VeDirectValueType.TEXT, "firmware_version_16"), // text
-    FWE("FWE", VeDirectValueType.TEXT, "firmware_version_32"), // text
-    PID("PID", VeDirectValueType.TEXT, "product_id"), // text
+    BMV("BMV", VeDirectValueType.TEXT, "bmv_model"),
+    FW("FW", VeDirectValueType.TEXT, "firmware_version_16"),
+    FWE("FWE", VeDirectValueType.TEXT, "firmware_version_32"),
+    PID("PID", VeDirectValueType.TEXT, "product_id"),
     SER("SER#", VeDirectValueType.TEXT, "serial_number"),
     HSDS("HSDS", VeDirectValueType.NUMBER, "day_sequence_number"),
     MODE("MODE", VeDirectValueType.NUMBER, "device_mode"),
@@ -75,7 +89,7 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, l
     WARN("WARN", VeDirectValueType.NUMBER, "warning_reason"),
     MPPT("MPPT", VeDirectValueType.NUMBER, "mppt_tracker_operation_mode"),
     MON("MON", VeDirectValueType.NUMBER, "dc_monitor_mode"),
-    CAP_BLE("CAP_BLE", VeDirectValueType.HEX, "cap_ble"); // TODO: find a name!
+    CAP_BLE("CAP_BLE", VeDirectValueType.HEX, "bluetooth_cap");
 
     companion object {
         fun exists(veName: String) = values().any { it.veName == veName }
@@ -83,9 +97,120 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, l
     }
 }
 
-enum class VeDirectValueType {
-    NUMBER,
-    ON_OFF,
-    TEXT,
-    HEX
+enum class VeDirectOffReason(val code: Long) {
+    NO_INPUT_POWER("0x00000001".toLong(radix = 16)),
+    SWITCHED_OFF_POWER_SWITCH("0x00000002".toLong(radix = 16)),
+    SWITCHED_OFF_DEVICE_MODE_REGISTER("0x00000004".toLong(radix = 16)),
+    REMOTE_INPUT("0x00000008".toLong(radix = 16)),
+    PROTECTION_ACTIVE("0x00000010".toLong(radix = 16)),
+    PAYGO("0x00000020".toLong(radix = 16)),
+    BMS("0x00000040".toLong(radix = 16)),
+    ENGINE_SHUTDOWN_DETECTION("0x00000080".toLong(radix = 16)),
+    ANALYSING_INPUT_VOLTAGE("0x00000100".toLong(radix = 16)),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
+}
+
+enum class VeDirectOperationState(val code: Long) {
+    OFF(0),
+    LOW_POWER(1),
+    FAULT(2),
+    BULK(3),
+    ABSORPTION(4),
+    FLOAT(5),
+    STORAGE(6),
+    EQUALIZE_MANUAL(7),
+    INVERTING(9),
+    POWER_SUPPLY(11),
+    STARTING_UP(245),
+    REPEATED_ABSORPTION(246),
+    AUTO_EQUALIZE_OR_RECONDITION(247),
+    BATTERY_SAFE(248),
+    EXTERNAL_CONTROL(252),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
+}
+
+enum class VeDirectError(val code: Long) {
+    NO_ERROR(0),
+    BATTERY_VOLTAGE_TOO_HIGH(2),
+    CHARGER_TEMPERATURE_TOO_HIGH(17),
+    CHARGER_OVER_CURRENT(18),
+    CHARGER_CURRENT_REVERSED(19),
+    BULK_TIME_LIMIT_EXCEEDED(20),
+    CURRENT_SENSOR_ISSUE(21),
+    TERMINALS_OVERHEATED(26),
+    CONVERTER_ISSUE(28),
+    INPUT_VOLTAGE_TOO_HIGH(33),
+    INPUT_CURRENT_TOO_HIGH(34),
+    INPUT_SHUTDOWN_EXCESSIVE_BATTERY_VOLTAGE(38),
+    INPUT_SHUTDOWN_CURRENT_FLOW_DURING_OFF(39),
+    LOST_COMMUNICATION(65),
+    DEVICE_CONFIGURATION_ISSUE(66),
+    BMS_CONNECTION_LOST(67),
+    NETWORK_MISCONFIGURED(68),
+    FACTORY_CALIBRATION_DATA_LOST(116),
+    INVALID_INCOMPATIBLE_FIRMWARE(117),
+    USER_SETTINGS_INVALID(119),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
+}
+
+enum class VeDirectDeviceMode(val code: Long) {
+    CHARGER(1),
+    INVERTER(2),
+    OFF(4),
+    ECO(5),
+    HIBERNATE(253),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
+}
+
+enum class VeDirectMpptTrackerOperationMode(val code: Long) {
+    OFF(0),
+    VOLTAGE_OR_CURRENT_LIMITED(1),
+    ACTIVE(2),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
+}
+
+enum class VeDirectDcMonitorMode(val code: Long) {
+    SOLAR_CHARGER(-9),
+    WIND_TURBINE(-8),
+    SHAFT_GENERATOR(-7),
+    ALTERNATOR(-6),
+    FUEL_CELL(-5),
+    WATER_GENERATOR(-4),
+    DC_DC_CHARGER(-3),
+    AC_CHARGER(-2),
+    GENERIC_SOURCE(-1),
+    BATTERY_MONITOR_BMV(0),
+    GENERIC_LOAD(1),
+    ELECTRIC_DRIVE(2),
+    FRIDGE(3),
+    WATER_PUMP(4),
+    BILGE_PUMP(5),
+    DC_SYSTEM(6),
+    INVERTER(7),
+    WATER_HEATER(8),
+    UNKNOWN(Long.MIN_VALUE);
+
+    companion object {
+        fun resolve(code: Long) = values().firstOrNull { it.code == code } ?: UNKNOWN
+    }
 }

@@ -3,6 +3,7 @@ package com.logreposit.vedirectreaderservice
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectEventListener
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectSerialClient
+import com.logreposit.vedirectreaderservice.configuration.VeDirectConfiguration
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
@@ -35,7 +36,11 @@ class SerialClientTests {
 
     @Test
     fun `test read from serial line per line`() {
-        val serialClient = VeDirectSerialClient(device = "/dev/tty.usbserial-VE2OV1G5").also {
+        val config = VeDirectConfiguration()
+
+        config.comPort = "/dev/tty.usbserial-VE2OV1G5"
+
+        val serialClient = VeDirectSerialClient(config).also {
             it.register(MyListener())
         }
 
@@ -48,7 +53,11 @@ class SerialClientTests {
 
     @Test
     fun `test read from serial line per line with additional command sending`() {
-        val serialClient = VeDirectSerialClient(device = "/dev/tty.usbserial-VE2OV1G5").also {
+        val config = VeDirectConfiguration()
+
+        config.comPort = "/dev/tty.usbserial-VE2OV1G5"
+
+        val serialClient = VeDirectSerialClient(config).also {
             it.register(MyListener())
         }
 
