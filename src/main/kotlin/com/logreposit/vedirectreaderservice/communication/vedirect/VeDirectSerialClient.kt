@@ -1,6 +1,7 @@
-package com.logreposit.vedirectreaderservice
+package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import com.fazecast.jSerialComm.SerialPort
+import com.logreposit.vedirectreaderservice.logger
 
 interface VeDirectEventListener {
     fun onVeDirectTextProtocolUpdate(textData: Map<String, String>)

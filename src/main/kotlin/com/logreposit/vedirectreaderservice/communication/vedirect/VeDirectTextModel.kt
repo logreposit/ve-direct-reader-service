@@ -1,15 +1,18 @@
-package com.logreposit.vedirectreaderservice
+package com.logreposit.vedirectreaderservice.communication.vedirect
 
-data class VeDirectNumberReading(
-    val field: VeDirectField,
-    val value: Long
-)
-
-class VeDirectReading<out T>(private val value: T, private val field: VeDirectField) {
-    fun get(): T {
-        return value
-    }
+abstract class VeDirectReading<out T>(private val field: VeDirectField, private val value: T) {
+    fun getValue(): T = value
 }
+
+class VeDirectNumberReading(field: VeDirectField, value: Long) : VeDirectReading<Long>(field, value)
+class VeDirectOnOffReading(field: VeDirectField, value: Boolean) : VeDirectReading<Boolean>(field, value)
+class VeDirectTextReading(field: VeDirectField, value: String) : VeDirectReading<String>(field, value)
+
+//sealed class VeDirectReading(private val field: VeDirectField)
+//
+//class VeDirectNumberReading(field: VeDirectField, private val value: Long) : VeDirectReading(field)
+//class VeDirectOnOffReading(field: VeDirectField, private val value: Boolean) : VeDirectReading(field)
+//class VeDirectTextReading(field: VeDirectField, private val value: String) : VeDirectReading(field)
 
 enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, logrepositName: String) {
     V("V", VeDirectValueType.NUMBER, "battery_voltage"),
@@ -75,7 +78,8 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, l
     CAP_BLE("CAP_BLE", VeDirectValueType.HEX, "cap_ble"); // TODO: find a name!
 
     companion object {
-        fun resolve(veName: String) = values().firstOrNull { it.veName == veName }
+        fun exists(veName: String) = values().any { it.veName == veName }
+        fun resolve(veName: String) = values().first() { it.veName == veName }
     }
 }
 

@@ -1,5 +1,8 @@
 package com.logreposit.vedirectreaderservice
 
+import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectEventListener
+import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
+import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectSerialClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
