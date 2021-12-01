@@ -45,12 +45,10 @@ class LogrepositApiService(
         logger.error(" I AM HERE ")
 
         val data = LogrepositIngressDataMapper.toLogrepositIngressDto(
-                date = receivedAt,
-                data = veDirectData,
-                address = "1" // Address is currently hardcoded, in future maybe configurable
+            date = receivedAt,
+            data = veDirectData,
+            address = "1" // Address is currently hardcoded, in future maybe configurable
         )
-
-        logger.error(" I AM HERE TOO ")
 
         val url = logrepositConfiguration.apiBaseUrl + "/v2/ingress/data"
 

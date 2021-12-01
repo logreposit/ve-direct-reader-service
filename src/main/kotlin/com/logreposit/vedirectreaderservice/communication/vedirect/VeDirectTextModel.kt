@@ -98,15 +98,15 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, v
 }
 
 enum class VeDirectOffReason(val code: Long) {
-    NO_INPUT_POWER("0x00000001".toLong(radix = 16)),
-    SWITCHED_OFF_POWER_SWITCH("0x00000002".toLong(radix = 16)),
-    SWITCHED_OFF_DEVICE_MODE_REGISTER("0x00000004".toLong(radix = 16)),
-    REMOTE_INPUT("0x00000008".toLong(radix = 16)),
-    PROTECTION_ACTIVE("0x00000010".toLong(radix = 16)),
-    PAYGO("0x00000020".toLong(radix = 16)),
-    BMS("0x00000040".toLong(radix = 16)),
-    ENGINE_SHUTDOWN_DETECTION("0x00000080".toLong(radix = 16)),
-    ANALYSING_INPUT_VOLTAGE("0x00000100".toLong(radix = 16)),
+    NO_INPUT_POWER(1), // 0x00000001
+    SWITCHED_OFF_POWER_SWITCH(2), // 0x00000002
+    SWITCHED_OFF_DEVICE_MODE_REGISTER(4), // 0x00000004
+    REMOTE_INPUT(8), // 0x00000008
+    PROTECTION_ACTIVE(16), // 0x00000010
+    PAYGO(32), // 0x00000020
+    BMS(64), // 0x00000040
+    ENGINE_SHUTDOWN_DETECTION(128), // 0x00000080
+    ANALYSING_INPUT_VOLTAGE(256), // 0x00000100
     UNKNOWN(Long.MIN_VALUE);
 
     companion object {
