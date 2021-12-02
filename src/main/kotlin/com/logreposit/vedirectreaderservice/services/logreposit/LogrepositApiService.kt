@@ -1,13 +1,15 @@
 package com.logreposit.vedirectreaderservice.services.logreposit
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IngressDefinition
 import com.logreposit.vedirectreaderservice.services.logreposit.mappers.LogrepositIngressDataMapper
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectReading
+import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectValueType
 import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.logger
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.DataType
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FieldDefinition
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.MeasurementDefinition
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -28,7 +30,7 @@ class LogrepositApiService(
         private val logrepositConfiguration: LogrepositConfiguration
 ) {
     private val logger = logger()
-    private val deviceDefinition = getDefinition()
+    private val deviceDefinition = buildDefinition()
 
     private val restTemplate: RestTemplate = restTemplateBuilder
             .setConnectTimeout(Duration.of(10, ChronoUnit.SECONDS))
@@ -42,8 +44,6 @@ class LogrepositApiService(
             backoff = Backoff(delay = 500)
     )
     fun pushData(receivedAt: Instant, veDirectData: List<VeDirectReading<Any>>) {
-        logger.error(" I AM HERE ")
-
         val data = LogrepositIngressDataMapper.toLogrepositIngressDto(
             date = receivedAt,
             data = veDirectData,
@@ -53,8 +53,6 @@ class LogrepositApiService(
         val url = logrepositConfiguration.apiBaseUrl + "/v2/ingress/data"
 
         logger.info("Sending data to Logreposit API ({}): {}", url, data)
-
-        logger.error(" I AM ALSO HERE TOO ")
 
         // TODO DoM: comment in again
         // val response = restTemplate.postForObject(url, HttpEntity(data, createHeaders(logrepositConfiguration.deviceToken)), String::class.java)
@@ -78,15 +76,26 @@ class LogrepositApiService(
         throw e
     }
 
-    private fun getDefinition(): IngressDefinition {
-        val yamlMapper = ObjectMapper(YAMLFactory())
+    private fun buildDefinition() = IngressDefinition(
+        measurements = listOf(
+            MeasurementDefinition(
+                name = "data",
+                tags = setOf("device_address"),
+                fields = VeDirectField.values().map {
+                    FieldDefinition(
+                        name = it.logrepositName,
+                        datatype = mapDataType(it.valueType),
+                        description = it.logrepositDescription
+                    )
+                })
+            )
+        )
 
-        yamlMapper.registerModule(KotlinModule())
-
-        // val definitionAsString = LogrepositApiService::class.java.getResource("/device-definition.yaml").readText()
-        // return yamlMapper.readValue(definitionAsString, IngressDefinition::class.java)
-
-        return IngressDefinition(measurements = listOf()) // TODO DoM
+    private fun mapDataType(veDirectValueType: VeDirectValueType) = when (veDirectValueType) {
+        VeDirectValueType.NUMBER -> DataType.INTEGER
+        VeDirectValueType.ON_OFF -> DataType.INTEGER
+        VeDirectValueType.TEXT -> DataType.STRING
+        VeDirectValueType.HEX -> DataType.INTEGER
     }
 
     private fun createHeaders(deviceToken: String?): HttpHeaders {
