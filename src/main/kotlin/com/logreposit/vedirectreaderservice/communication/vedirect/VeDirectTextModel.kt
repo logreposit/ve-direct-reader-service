@@ -28,7 +28,7 @@ enum class VeDirectValueType {
     HEX
 }
 
-enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, val logrepositName: String, val logrepositDescription) {
+enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, val logrepositName: String, val logrepositDescription: String) {
     V("V", VeDirectValueType.NUMBER, "battery_voltage", ""),
     V2("V2", VeDirectValueType.NUMBER, "battery_voltage_2", ""),
     V3("V3", VeDirectValueType.NUMBER, "battery_voltage_3", ""),
