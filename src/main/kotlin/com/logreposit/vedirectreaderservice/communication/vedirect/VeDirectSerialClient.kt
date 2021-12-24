@@ -9,6 +9,7 @@ interface VeDirectEventListener {
     fun onVeDirectTextProtocolUpdate(textData: Map<String, String>)
 }
 
+@OptIn(ExperimentalUnsignedTypes::class)
 @Service
 class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
@@ -86,9 +87,9 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
     private fun processByte(byte: Byte) {
         if (byte == HEX && state != ReaderState.CHECKSUM) {
-            hexBuffer.clear() // TODO: DoM: Added
+            hexBuffer.clear()
             state = ReaderState.HEX
-            // logger.error("HEX ==> RECEIVED HEX MSG START")
+            logger.debug("HEX ==> RECEIVED HEX MSG START")
             return
         }
 
@@ -103,9 +104,8 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
         }
     }
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     private fun inHex(byte: Byte) {
-        // logger.error("HEX ==> IN HEX MODE!")
+        logger.debug("HEX ==> IN HEX MODE!")
         //inputBuffer.clear()
 
         if (byte != LF) {
@@ -114,7 +114,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
             return;
         }
 
-        inputBuffer.clear() // TODO DoM: Added
+        inputBuffer.clear()
 
         logger.debug("HEX Response is complete (LF), content: ${String(hexBuffer.toByteArray())}")
 

@@ -42,22 +42,4 @@ object LogrepositIngressDataMapper {
         true -> 1L
         false -> 0L
     }
-
-    private fun createFault(date: Instant, address: String, faultName: String, state: Boolean) = Reading(
-            date = date,
-            measurement = "faults",
-            tags = listOfNotNull(
-                    Tag(name = "device_address", value = address),
-                    Tag(name = "fault_name", value = faultName)
-            ),
-            fields = listOfNotNull(
-                    IntegerField(name = "state", value = boolToLong(state)),
-                    StringField(name = "state_str", value = stateToString(state = state))
-            )
-    )
-
-    private fun stateToString(state: Boolean) = when (state) {
-        true -> "ERROR"
-        false -> "OK"
-    }
 }
