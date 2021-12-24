@@ -11,10 +11,24 @@ class VeDirectMapperTests {
 
         assertThat(veDirectReadings).hasSize(18)
 
-        val firstThing = veDirectReadings[0]
-
-        assertThat(firstThing).isExactlyInstanceOf(VeDirectTextReading::class.java)
-        assertThat(firstThing.value).isEqualTo("0xA057")
+        assertVeDirectReading(veDirectReadings[0], VeDirectField.PID, VeDirectTextReading::class.java, "0xA057")
+        assertVeDirectReading(veDirectReadings[1], VeDirectField.FW, VeDirectTextReading::class.java, "157")
+        assertVeDirectReading(veDirectReadings[2], VeDirectField.SER, VeDirectTextReading::class.java, "HQ2046UHRK6")
+        assertVeDirectReading(veDirectReadings[3], VeDirectField.V, VeDirectNumberReading::class.java, 22870L)
+        assertVeDirectReading(veDirectReadings[4], VeDirectField.I, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[5], VeDirectField.VPV, VeDirectNumberReading::class.java, 10L)
+        assertVeDirectReading(veDirectReadings[6], VeDirectField.PPV, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[7], VeDirectField.CS, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[8], VeDirectField.MPPT, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[9], VeDirectField.OR, VeDirectNumberReading::class.java, 1L)
+        assertVeDirectReading(veDirectReadings[10], VeDirectField.ERR, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[11], VeDirectField.LOAD, VeDirectOnOffReading::class.java, false)
+        assertVeDirectReading(veDirectReadings[12], VeDirectField.H19, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[13], VeDirectField.H20, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[14], VeDirectField.H21, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[15], VeDirectField.H22, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[16], VeDirectField.H23, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[17], VeDirectField.HSDS, VeDirectNumberReading::class.java, 0L)
     }
 
     @Test
@@ -23,6 +37,32 @@ class VeDirectMapperTests {
         val veDirectReadings = VeDirectMapper.map(veDirectTextData)
 
         assertThat(veDirectReadings).hasSize(25)
+
+        assertVeDirectReading(veDirectReadings[0], VeDirectField.PID, VeDirectTextReading::class.java, "0x203")
+        assertVeDirectReading(veDirectReadings[1], VeDirectField.V, VeDirectNumberReading::class.java, 22930L)
+        assertVeDirectReading(veDirectReadings[2], VeDirectField.I, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[3], VeDirectField.P, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[4], VeDirectField.SOC, VeDirectNumberReading::class.java, 1000L)
+        assertVeDirectReading(veDirectReadings[5], VeDirectField.TTG, VeDirectNumberReading::class.java, -1L)
+        assertVeDirectReading(veDirectReadings[6], VeDirectField.ALARM, VeDirectOnOffReading::class.java, false)
+        assertVeDirectReading(veDirectReadings[7], VeDirectField.RELAY, VeDirectOnOffReading::class.java, false)
+        assertVeDirectReading(veDirectReadings[8], VeDirectField.AR, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[9], VeDirectField.BMV, VeDirectTextReading::class.java, "700")
+        assertVeDirectReading(veDirectReadings[10], VeDirectField.FW, VeDirectTextReading::class.java, "0308")
+        assertVeDirectReading(veDirectReadings[11], VeDirectField.H1, VeDirectNumberReading::class.java, -1L)
+        assertVeDirectReading(veDirectReadings[12], VeDirectField.H2, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[13], VeDirectField.H3, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[14], VeDirectField.H4, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[15], VeDirectField.H5, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[16], VeDirectField.H6, VeDirectNumberReading::class.java, -1L)
+        assertVeDirectReading(veDirectReadings[17], VeDirectField.H7, VeDirectNumberReading::class.java, 6L)
+        assertVeDirectReading(veDirectReadings[18], VeDirectField.H8, VeDirectNumberReading::class.java, 22933L)
+        assertVeDirectReading(veDirectReadings[19], VeDirectField.H9, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[20], VeDirectField.H10, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[21], VeDirectField.H11, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[22], VeDirectField.H12, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[23], VeDirectField.H17, VeDirectNumberReading::class.java, 0L)
+        assertVeDirectReading(veDirectReadings[24], VeDirectField.H18, VeDirectNumberReading::class.java, 0L)
     }
 
     @Test
@@ -82,4 +122,11 @@ class VeDirectMapperTests {
         "H17" to "0",
         "H18" to "0"
     )
+
+    private fun assertVeDirectReading(veDirectReading: VeDirectReading<Any>, expectedVeDirectField: VeDirectField, expectedVeDirectInstance: Class<*>, expectedVeDirectValue: Any) {
+        assertThat(veDirectReading).isNotNull
+        assertThat(veDirectReading).isExactlyInstanceOf(expectedVeDirectInstance)
+        assertThat(veDirectReading.field).isEqualTo(expectedVeDirectField)
+        assertThat(veDirectReading.value).isEqualTo(expectedVeDirectValue)
+    }
 }
