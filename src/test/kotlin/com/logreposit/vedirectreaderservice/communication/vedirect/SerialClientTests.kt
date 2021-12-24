@@ -2,7 +2,7 @@ package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import com.logreposit.vedirectreaderservice.configuration.VeDirectConfiguration
 import com.logreposit.vedirectreaderservice.logger
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -21,17 +21,7 @@ class SerialClientTests {
 
     private val log = logger()
 
-    @Test
-    fun `test smth`() {
-        var myVeField = VeDirectField.resolve("V")
-
-        assertThat(myVeField).isEqualTo(VeDirectField.V)
-
-        var mySecondVeField = VeDirectField.resolve("BLAH")
-
-        assertThat(mySecondVeField).isEqualTo(VeDirectField.V)
-    }
-
+    @Disabled("meant for manual execution")
     @Test
     fun `test read from serial line per line`() {
         val config = VeDirectConfiguration()
@@ -49,6 +39,7 @@ class SerialClientTests {
         while (true) { }
     }
 
+    @Disabled("meant for manual execution")
     @Test
     fun `test read from serial line per line with additional command sending`() {
         val config = VeDirectConfiguration()
@@ -94,5 +85,4 @@ class SerialClientTests {
 
         return b
     }
-
 }

@@ -3,8 +3,10 @@ package com.logreposit.vedirectreaderservice
 import com.fazecast.jSerialComm.SerialPort
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectClient
 import org.springframework.boot.CommandLineRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
+@Profile("!test")
 @Component
 class StartupRunner(private val veDirectClient: VeDirectClient) : CommandLineRunner {
     val logger = logger()
