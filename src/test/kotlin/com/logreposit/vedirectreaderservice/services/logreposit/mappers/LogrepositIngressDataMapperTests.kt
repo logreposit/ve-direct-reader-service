@@ -1,4 +1,4 @@
-package services.logreposit.mappers
+package com.logreposit.vedirectreaderservice.services.logreposit.mappers
 
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectNumberReading
@@ -7,7 +7,6 @@ import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectTextR
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.DataType
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IntegerField
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.StringField
-import com.logreposit.vedirectreaderservice.services.logreposit.mappers.LogrepositIngressDataMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant

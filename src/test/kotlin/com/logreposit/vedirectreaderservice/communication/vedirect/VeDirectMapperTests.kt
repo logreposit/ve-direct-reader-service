@@ -1,7 +1,5 @@
-package com.logreposit.vedirectreaderservice
+package com.logreposit.vedirectreaderservice.communication.vedirect
 
-import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectMapper
-import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectTextReading
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
