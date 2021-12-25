@@ -45,7 +45,7 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, v
     T("T", VeDirectValueType.NUMBER, "battery_temperature", "Battery temperature [°C]"),
     P("P", VeDirectValueType.NUMBER, "instantaneous_power", "Instantaneous power [W]"),
     CE("CE", VeDirectValueType.NUMBER, "consumed_energy", "Consumed Amp Hours [mAh]"),
-    SOC("SOC", VeDirectValueType.NUMBER, "state_of_charge", "State-of-charge [‰]"),
+    SOC("SOC", VeDirectValueType.NUMBER, "battery_state_of_charge", "State-of-charge [‰]"),
     TTG("TTG", VeDirectValueType.NUMBER, "time_to_go", "Time-to-go [min]"),
     ALARM("Alarm", VeDirectValueType.ON_OFF, "alarm_state", "Alarm condition active [ON/OFF]"),
     RELAY("Relay", VeDirectValueType.ON_OFF, "relay_state", "Relay state [ON/OFF]"),
