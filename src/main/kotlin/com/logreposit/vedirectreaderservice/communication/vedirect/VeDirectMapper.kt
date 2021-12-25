@@ -37,13 +37,13 @@ object VeDirectMapper {
         return when (veDirectValue.lowercase(Locale.US)) {
             "on" -> true
             "off" -> false
-            else -> throw Exception("TODO: can only be on or off")
+            else -> throw Exception("TODO: can only be on or off") // TODO DoM
         }
     }
 
     private fun parseNumberFromHexString(hex: String) : Long {
         if (!hex.lowercase().startsWith("0x")) {
-            throw Exception("HEX values must start with 0x")
+            throw Exception("HEX values must start with 0x") // TODO DoM
         }
 
         return hex.removePrefix("0x").toLong(radix = 16)
