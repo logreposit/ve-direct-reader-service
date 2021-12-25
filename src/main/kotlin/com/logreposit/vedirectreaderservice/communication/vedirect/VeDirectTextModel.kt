@@ -29,7 +29,7 @@ enum class VeDirectValueType {
 }
 
 enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, val logrepositName: String, val logrepositDescription: String) {
-    V("V", VeDirectValueType.NUMBER, "battery_voltage", "Main or channel 1 (battery) voltage [mV]]"),
+    V("V", VeDirectValueType.NUMBER, "battery_voltage", "Main or channel 1 (battery) voltage [mV]"),
     V2("V2", VeDirectValueType.NUMBER, "battery_voltage_2", "Channel 2 (battery) voltage [mV]"),
     V3("V3", VeDirectValueType.NUMBER, "battery_voltage_3", "Channel 3 (battery) voltage [mV]"),
     VS("VS", VeDirectValueType.NUMBER, "auxiliary_voltage", "Auxiliary (starter) voltage [mV]"),
