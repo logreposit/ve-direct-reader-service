@@ -53,10 +53,10 @@ class LogrepositIngressDataMapper(private val includeLegacyFields: Boolean) {
         }
 
         return when (reading.field) {
-            VeDirectField.ALARM -> if (reading is VeDirectOnOffReading) IntegerField(name = "alarm", value = boolToLong(reading.value)) else null
-            VeDirectField.RELAY -> if (reading is VeDirectOnOffReading) IntegerField(name = "relay", value = boolToLong(reading.value)) else null
-            VeDirectField.I -> if (reading is VeDirectNumberReading) IntegerField(name = "current", value = reading.value) else null
-            VeDirectField.SOC -> if (reading is VeDirectNumberReading) FloatField(name = "state_of_charge", value = reading.value * 0.1) else null
+            VeDirectField.ALARM -> IntegerField(name = "alarm", value = boolToLong((reading as VeDirectOnOffReading).value))
+            VeDirectField.RELAY -> IntegerField(name = "relay", value = boolToLong((reading as VeDirectOnOffReading).value))
+            VeDirectField.I -> IntegerField(name = "current", value = (reading as VeDirectNumberReading).value)
+            VeDirectField.SOC -> FloatField(name = "state_of_charge", value = (reading as VeDirectNumberReading).value * 0.1)
             else -> null
         }
     }
