@@ -76,6 +76,7 @@ class LogrepositApiService(
         throw e
     }
 
+    // TODO DoM: What about those string-representation `_str` fields and legacy-mode fields?
     private fun buildDefinition() = IngressDefinition(
         measurements = listOf(
             MeasurementDefinition(
