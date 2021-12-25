@@ -83,15 +83,60 @@ class LogrepositApiService(
             MeasurementDefinition(
                 name = "data",
                 tags = setOf("device_address"),
-                fields = VeDirectField.values().map {
-                    FieldDefinition(
-                        name = it.logrepositName,
-                        datatype = mapDataType(it.valueType),
-                        description = it.logrepositDescription
-                    )
-                })
+                fields = buildFieldDefinitions()
             )
         )
+    )
+
+    private fun buildFieldDefinitions(): List<FieldDefinition> {
+        val veDirectFields = VeDirectField.values()
+            .map {
+                FieldDefinition(
+                    name = it.logrepositName,
+                    datatype = mapDataType(it.valueType),
+                    description = it.logrepositDescription
+                )
+            }
+
+        val veDirectStringRepresentationFields = VeDirectField.values()
+            .filter { it.hasStringRepresentation }
+            .map {
+                FieldDefinition(
+                    name = it.logrepositName + "_str",
+                    datatype = DataType.STRING,
+                    description = it.logrepositDescription
+                )
+            }
+
+        val legacyFieldDefinitions = listOf(
+            FieldDefinition(
+                name = "alarm",
+                datatype = DataType.INTEGER,
+                description = VeDirectField.ALARM.logrepositDescription
+            ),
+            FieldDefinition(
+                name = "relay",
+                datatype = DataType.INTEGER,
+                description = VeDirectField.RELAY.logrepositDescription
+            ),
+            FieldDefinition(
+                name = "current",
+                datatype = DataType.INTEGER,
+                description = VeDirectField.I.logrepositDescription
+            ),
+            FieldDefinition(
+                name = "state_of_charge",
+                datatype = DataType.FLOAT,
+                description = VeDirectField.SOC.logrepositDescription
+            )
+        )
+
+        if (logrepositConfiguration.includeLegacyFields == true) {
+            return veDirectFields + veDirectStringRepresentationFields + legacyFieldDefinitions
+        }
+
+        return veDirectFields + veDirectStringRepresentationFields
+    }
 
     private fun mapDataType(veDirectValueType: VeDirectValueType) = when (veDirectValueType) {
         VeDirectValueType.NUMBER -> DataType.INTEGER
