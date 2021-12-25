@@ -63,7 +63,7 @@ class LogrepositApiService(
     }
 
     @Recover
-    fun recoverUnprocessableEntity(e: HttpClientErrorException.UnprocessableEntity, veDirectData: List<VeDirectReading<Any>>) {
+    fun recoverUnprocessableEntity(e: HttpClientErrorException.UnprocessableEntity, receivedAt: Instant, veDirectData: List<VeDirectReading<Any>>) {
         logger.warn("Error while sending data to Logreposit API. Got unprocessable entity. Most likely a device definition validation error.", veDirectData, e)
         logger.warn("Updating device ingress definition ...")
 
@@ -73,7 +73,7 @@ class LogrepositApiService(
     }
 
     @Recover
-    fun recoverThrowable(e: Throwable, veDirectData: List<VeDirectReading<Any>>) {
+    fun recoverThrowable(e: Throwable, receivedAt: Instant, veDirectData: List<VeDirectReading<Any>>) {
         logger.error("Could not send data to Logreposit API: {}", veDirectData, e)
 
         throw e
