@@ -16,7 +16,7 @@ class LogrepositIngressDataMapperTests {
     fun `test map from VeDirectReadings to IngressData`() {
         val now = Instant.now()
 
-        val ingressData = LogrepositIngressDataMapper.toLogrepositIngressDto(
+        val ingressData = LogrepositIngressDataMapper(false).toLogrepositIngressDto(
             date = now,
             address = "1",
             data = listOf(

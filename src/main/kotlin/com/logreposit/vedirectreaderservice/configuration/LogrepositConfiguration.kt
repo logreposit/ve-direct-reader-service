@@ -8,5 +8,6 @@ import org.springframework.context.annotation.Configuration
 class LogrepositConfiguration {
     var apiBaseUrl: String? = null
     var deviceToken: String? = null
+    var includeLegacyFields: Boolean? = null
     var scrapeIntervalInMillis: Long? = null
 }

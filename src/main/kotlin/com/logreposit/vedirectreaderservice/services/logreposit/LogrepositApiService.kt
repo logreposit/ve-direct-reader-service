@@ -30,6 +30,7 @@ class LogrepositApiService(
         private val logrepositConfiguration: LogrepositConfiguration
 ) {
     private val logger = logger()
+    private val logrepositIngressDataMapper = LogrepositIngressDataMapper(logrepositConfiguration.includeLegacyFields ?: false)
     private val deviceDefinition = buildDefinition()
 
     private val restTemplate: RestTemplate = restTemplateBuilder
@@ -44,7 +45,7 @@ class LogrepositApiService(
             backoff = Backoff(delay = 500)
     )
     fun pushData(receivedAt: Instant, veDirectData: List<VeDirectReading<Any>>) {
-        val data = LogrepositIngressDataMapper.toLogrepositIngressDto(
+        val data = logrepositIngressDataMapper.toLogrepositIngressDto(
             date = receivedAt,
             data = veDirectData,
             address = "1" // Address is currently hardcoded, in future maybe configurable

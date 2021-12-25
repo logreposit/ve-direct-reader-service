@@ -14,7 +14,7 @@ import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Fie
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FloatField
 import java.time.Instant
 
-object LogrepositIngressDataMapper {
+class LogrepositIngressDataMapper(private val includeLegacyFields: Boolean) {
     fun toLogrepositIngressDto(date: Instant, address: String, data: List<VeDirectReading<Any>>) = IngressData(
             readings = listOf(
                     Reading(
@@ -47,11 +47,17 @@ object LogrepositIngressDataMapper {
     }
 
     // To be backwards compatible to the old bmv-reader-service (BMV-600S)
-    private fun getLegacyReading(reading: VeDirectReading<Any>): Field? = when (reading.field) {
-        VeDirectField.ALARM -> if (reading is VeDirectOnOffReading) IntegerField(name = "alarm", value = boolToLong(reading.value)) else null
-        VeDirectField.RELAY -> if (reading is VeDirectOnOffReading) IntegerField(name = "relay", value = boolToLong(reading.value)) else null
-        VeDirectField.I -> if (reading is VeDirectNumberReading) IntegerField(name = "current", value = reading.value) else null
-        VeDirectField.SOC -> if (reading is VeDirectNumberReading) FloatField(name = "state_of_charge", value = reading.value * 0.1) else null
-        else -> null
+    private fun getLegacyReading(reading: VeDirectReading<Any>): Field? {
+        if (!includeLegacyFields) {
+            return null
+        }
+
+        return when (reading.field) {
+            VeDirectField.ALARM -> if (reading is VeDirectOnOffReading) IntegerField(name = "alarm", value = boolToLong(reading.value)) else null
+            VeDirectField.RELAY -> if (reading is VeDirectOnOffReading) IntegerField(name = "relay", value = boolToLong(reading.value)) else null
+            VeDirectField.I -> if (reading is VeDirectNumberReading) IntegerField(name = "current", value = reading.value) else null
+            VeDirectField.SOC -> if (reading is VeDirectNumberReading) FloatField(name = "state_of_charge", value = reading.value * 0.1) else null
+            else -> null
+        }
     }
 }
