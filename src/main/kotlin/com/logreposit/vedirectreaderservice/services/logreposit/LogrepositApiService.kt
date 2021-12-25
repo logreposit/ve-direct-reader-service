@@ -55,9 +55,9 @@ class LogrepositApiService(
 
         logger.info("Sending data to Logreposit API ({}): {}", url, data)
 
-        // TODO DoM: comment in again
-        // val response = restTemplate.postForObject(url, HttpEntity(data, createHeaders(logrepositConfiguration.deviceToken)), String::class.java)
-        // logger.info("Response from Logreposit API: {}", response)
+        val response = restTemplate.postForObject(url, HttpEntity(data, createHeaders(logrepositConfiguration.deviceToken)), String::class.java)
+
+        logger.info("Response from Logreposit API: {}", response)
     }
 
     @Recover
@@ -77,7 +77,6 @@ class LogrepositApiService(
         throw e
     }
 
-    // TODO DoM: What about those string-representation `_str` fields and legacy-mode fields?
     private fun buildDefinition() = IngressDefinition(
         measurements = listOf(
             MeasurementDefinition(
