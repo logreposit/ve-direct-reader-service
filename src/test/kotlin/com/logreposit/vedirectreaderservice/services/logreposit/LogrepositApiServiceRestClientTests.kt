@@ -90,7 +90,7 @@ class LogrepositApiServiceRestClientTests {
         }
 
         Assertions.assertThat(thrown.message).isEqualTo("500 Internal Server Error: [no body]")
-        Assertions.assertThat(System.currentTimeMillis() - started).isBetween(2000, 3000)
+        Assertions.assertThat(System.currentTimeMillis() - started).isBetween(2000, 3500)
 
         server.verify()
     }
