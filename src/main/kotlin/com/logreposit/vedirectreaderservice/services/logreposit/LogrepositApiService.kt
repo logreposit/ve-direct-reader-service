@@ -30,7 +30,7 @@ class LogrepositApiService(
         private val logrepositConfiguration: LogrepositConfiguration
 ) {
     private val logger = logger()
-    private val logrepositIngressDataMapper = LogrepositIngressDataMapper(logrepositConfiguration.includeLegacyFields ?: false)
+    private val logrepositIngressDataMapper = LogrepositIngressDataMapper(logrepositConfiguration)
     private val deviceDefinition = buildDefinition()
 
     private val restTemplate: RestTemplate = restTemplateBuilder

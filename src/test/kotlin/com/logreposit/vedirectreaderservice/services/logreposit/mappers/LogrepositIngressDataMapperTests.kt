@@ -4,6 +4,7 @@ import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectNumberReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectOnOffReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectTextReading
+import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.DataType
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FloatField
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IntegerField
@@ -17,7 +18,7 @@ class LogrepositIngressDataMapperTests {
     fun `test map from VeDirectReadings to IngressData`() {
         val now = Instant.now()
 
-        val ingressData = LogrepositIngressDataMapper(false).toLogrepositIngressDto(
+        val ingressData = LogrepositIngressDataMapper(LogrepositConfiguration()).toLogrepositIngressDto(
             date = now,
             address = "1",
             data = sampleVeDirectReadings()
@@ -71,7 +72,7 @@ class LogrepositIngressDataMapperTests {
     fun `test map from VeDirectReadings to IngressData with legacy translation enabled`() {
         val now = Instant.now()
 
-        val ingressData = LogrepositIngressDataMapper(true).toLogrepositIngressDto(
+        val ingressData = LogrepositIngressDataMapper(LogrepositConfiguration().also { it.includeLegacyFields = true }).toLogrepositIngressDto(
             date = now,
             address = "1",
             data = sampleVeDirectReadings()
@@ -141,7 +142,7 @@ class LogrepositIngressDataMapperTests {
     fun `test map from VeDirectReadings to string representation fields`() {
         val now = Instant.now()
 
-        val ingressData = LogrepositIngressDataMapper(false).toLogrepositIngressDto(
+        val ingressData = LogrepositIngressDataMapper(LogrepositConfiguration()).toLogrepositIngressDto(
             date = now,
             address = "1",
             data = listOf(

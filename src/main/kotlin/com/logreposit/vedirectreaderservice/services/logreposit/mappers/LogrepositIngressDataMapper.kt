@@ -10,11 +10,12 @@ import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Str
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Tag
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectTextReading
+import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Field
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FloatField
 import java.time.Instant
 
-class LogrepositIngressDataMapper(private val includeLegacyFields: Boolean) {
+class LogrepositIngressDataMapper(private val logrepositConfiguration: LogrepositConfiguration) {
     fun toLogrepositIngressDto(date: Instant, address: String, data: List<VeDirectReading<Any>>) = IngressData(
             readings = listOf(
                     Reading(
@@ -48,7 +49,7 @@ class LogrepositIngressDataMapper(private val includeLegacyFields: Boolean) {
 
     // To be backwards compatible to the old bmv-reader-service (BMV-600S)
     private fun getLegacyReading(reading: VeDirectReading<Any>): Field? {
-        if (!includeLegacyFields) {
+        if (logrepositConfiguration.includeLegacyFields != true) {
             return null
         }
 
