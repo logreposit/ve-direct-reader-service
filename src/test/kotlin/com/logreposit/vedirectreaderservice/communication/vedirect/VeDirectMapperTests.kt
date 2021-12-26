@@ -1,6 +1,7 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class VeDirectMapperTests {
@@ -72,6 +73,20 @@ class VeDirectMapperTests {
         val veDirectReadings = VeDirectMapper.map(veDirectTextData)
 
         assertThat(veDirectReadings).hasSize(18)
+    }
+
+    @Test
+    fun `test parse hex value, given value does not start with 0x, expect IllegalArgumentException`() {
+        assertThatThrownBy { VeDirectMapper.map(mapOf("OR" to "someInvalidValue")) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("HEX values must start with 0x! Got argument hex=someInvalidValue")
+    }
+
+    @Test
+    fun `test parse on_off value, given invalid value, expect IllegalArgumentException`() {
+        assertThatThrownBy { VeDirectMapper.map(mapOf("Alarm" to "someInvalidValue")) }
+            .isExactlyInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Expected VE.Direct on/off value (case insensitive) but got veDirectValue=someInvalidValue")
     }
 
     private fun sampleMpptVeDirectTextData() = mapOf(

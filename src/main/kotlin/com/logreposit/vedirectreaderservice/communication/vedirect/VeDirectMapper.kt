@@ -1,7 +1,6 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import com.logreposit.vedirectreaderservice.logger
-import java.lang.Exception
 import java.util.Locale
 
 object VeDirectMapper {
@@ -37,13 +36,13 @@ object VeDirectMapper {
         return when (veDirectValue.lowercase(Locale.US)) {
             "on" -> true
             "off" -> false
-            else -> throw Exception("TODO: can only be on or off") // TODO DoM
+            else -> throw java.lang.IllegalArgumentException("Expected VE.Direct on/off value (case insensitive) but got veDirectValue=${veDirectValue}")
         }
     }
 
     private fun parseNumberFromHexString(hex: String) : Long {
         if (!hex.lowercase().startsWith("0x")) {
-            throw Exception("HEX values must start with 0x") // TODO DoM
+            throw IllegalArgumentException("HEX values must start with 0x! Got argument hex=${hex}")
         }
 
         return hex.removePrefix("0x").toLong(radix = 16)
