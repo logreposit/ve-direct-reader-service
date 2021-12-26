@@ -47,7 +47,7 @@ class LogrepositApiService(
         val data = logrepositIngressDataMapper.toLogrepositIngressDto(
             date = receivedAt,
             data = veDirectData,
-            address = "1" // Address is currently hardcoded, in future maybe configurable
+            address = logrepositConfiguration.address ?: "1"
         )
 
         val url = logrepositConfiguration.apiBaseUrl + "/v2/ingress/data"

@@ -10,4 +10,5 @@ class LogrepositConfiguration {
     var deviceToken: String? = null
     var includeLegacyFields: Boolean? = null
     var scrapeIntervalInMillis: Long? = null
+    var address: String? = null
 }
