@@ -54,8 +54,6 @@ class LogrepositApiService(
 
         logger.info("Sending data to Logreposit API ({}): {}", url, data)
 
-       // TODO DoM: Write rest client test for this class.
-
         val response = restTemplate.postForObject(url, HttpEntity(data, createHeaders(logrepositConfiguration.deviceToken)), String::class.java)
 
         logger.info("Response from Logreposit API: {}", response)
@@ -132,7 +130,7 @@ class LogrepositApiService(
         )
 
         if (logrepositConfiguration.includeLegacyFields == true) {
-            return veDirectFields + veDirectStringRepresentationFields + legacyFieldDefinitions // TODO DoM: write test with condition includeLegacyFields=true
+            return veDirectFields + veDirectStringRepresentationFields + legacyFieldDefinitions
         }
 
         return veDirectFields + veDirectStringRepresentationFields
