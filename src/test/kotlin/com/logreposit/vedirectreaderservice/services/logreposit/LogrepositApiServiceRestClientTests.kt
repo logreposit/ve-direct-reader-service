@@ -136,11 +136,18 @@ class LogrepositApiServiceRestClientTests {
                 .andExpect(jsonPath("$.measurements[0].tags.length()").value(1))
                 .andExpect(jsonPath("$.measurements[0].tags[0]").value("device_address"))
                 .andExpect(jsonPath("$.measurements[0].fields").isArray)
-                .andExpect(jsonPath("$.measurements[0].fields.length()").value(67))
+                .andExpect(jsonPath("$.measurements[0].fields.length()").value(71))
 
-        // TODO DoM: adjust to also check for the legacy field definitions! Something with the mockito mocks is not correctly set up here..
-
-        expectIngressDefinitionUpdateBasePayload(expectations).andRespond(MockRestResponseCreators.withSuccess())
+        expectIngressDefinitionUpdateBasePayload(expectations)
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"alarm\")].description").value("Alarm condition active [ON/OFF]"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"alarm\")].datatype").value("INTEGER"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"relay\")].description").value("Relay state [ON/OFF]"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"relay\")].datatype").value("INTEGER"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"current\")].description").value("Main or channel 1 battery current [mA]"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"current\")].datatype").value("INTEGER"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"state_of_charge\")].description").value("State-of-charge [%]"))
+            .andExpect(jsonPath("$.measurements[0].fields[?(@.name == \"state_of_charge\")].datatype").value("FLOAT"))
+            .andRespond(MockRestResponseCreators.withSuccess())
 
         client.pushData(receivedAt = Instant.now(), veDirectData = sampleVeDirectData())
 

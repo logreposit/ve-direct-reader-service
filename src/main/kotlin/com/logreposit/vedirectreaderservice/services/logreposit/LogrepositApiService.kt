@@ -31,7 +31,6 @@ class LogrepositApiService(
 ) {
     private val logger = logger()
     private val logrepositIngressDataMapper = LogrepositIngressDataMapper(logrepositConfiguration)
-    private val deviceDefinition = buildDefinition()
 
     private val restTemplate: RestTemplate = restTemplateBuilder
             .setConnectTimeout(Duration.of(10, ChronoUnit.SECONDS))
@@ -69,7 +68,7 @@ class LogrepositApiService(
 
         val url = logrepositConfiguration.apiBaseUrl + "/v2/ingress/definition"
 
-        restTemplate.put(url, HttpEntity(deviceDefinition, createHeaders(logrepositConfiguration.deviceToken)))
+        restTemplate.put(url, HttpEntity(buildDefinition(), createHeaders(logrepositConfiguration.deviceToken)))
     }
 
     @Recover
@@ -128,7 +127,7 @@ class LogrepositApiService(
             FieldDefinition(
                 name = "state_of_charge",
                 datatype = DataType.FLOAT,
-                description = VeDirectField.SOC.logrepositDescription
+                description = "State-of-charge [%]"
             )
         )
 
