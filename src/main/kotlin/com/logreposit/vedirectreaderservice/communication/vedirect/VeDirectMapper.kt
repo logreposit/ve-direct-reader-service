@@ -7,17 +7,19 @@ object VeDirectMapper {
     private val log = logger()
 
     fun map(veDirectTextData: Map<String, String>): List<VeDirectReading<Any>> {
-        veDirectTextData
-            .map { it.key }
-            .filterNot { VeDirectField.exists(it) }
-            .also {
-                if (it.isNotEmpty()) {
-                    log.info("The following VE.Direct fields got from the device are not (yet) implemented: $it")
-                }
-            }
+        logUnknownFields(veDirectTextData)
 
         return mapTextData(veDirectTextData)
     }
+
+    private fun logUnknownFields(veDirectTextData: Map<String, String>) = veDirectTextData
+        .map { it.key }
+        .filterNot { VeDirectField.exists(it) }
+        .also {
+            if (it.isNotEmpty()) {
+                log.info("The following VE.Direct fields got from the device are not (yet) implemented: $it")
+            }
+        }
 
     private fun mapTextData(veDirectTextData: Map<String, String>) = veDirectTextData
         .filter { VeDirectField.exists(it.key) }
