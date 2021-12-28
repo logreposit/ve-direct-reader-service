@@ -1,5 +1,6 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
+import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.services.logreposit.LogrepositApiService
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.kotlin.await
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit
 class VeDirectClientTests {
     private val veDirectSerialClient: VeDirectSerialClient = mock()
     private val logrepositApiService: LogrepositApiService = mock()
+    private val logrepositConfiguration: LogrepositConfiguration = mock()
 
     @Test
     fun `test given startListeningAndReport is called, expect VeDirectClient instance is registered as callback and VeDirectSerialClient gets triggered to start listening to serial events`() {
@@ -73,6 +75,7 @@ class VeDirectClientTests {
         threadPoolTaskExecutor.initialize()
 
         return VeDirectClient(
+            logrepositConfiguration = logrepositConfiguration,
             veDirectSerialClient = veDirectSerialClient,
             threadPoolTaskExecutor = threadPoolTaskExecutor,
             logrepositApiService = logrepositApiService
