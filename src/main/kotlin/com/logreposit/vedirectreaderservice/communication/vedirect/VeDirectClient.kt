@@ -61,9 +61,8 @@ class VeDirectClient(
             val lastUpdatedAt = lastUpdates[it.field] ?: return true
 
             val offset = Duration.between(lastUpdatedAt, receivedAt)
-            val millis = offset.toMillis() // TODO check positive/negative
 
-            if (millis >= updateInterval) {
+            if (offset.toMillis() >= updateInterval) {
                 return true
             }
         }
