@@ -1,11 +1,11 @@
 package com.logreposit.vedirectreaderservice.communication.vedirect
 
 import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
-import org.springframework.stereotype.Service
 import com.logreposit.vedirectreaderservice.logger
 import com.logreposit.vedirectreaderservice.services.logreposit.LogrepositApiService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -15,7 +15,8 @@ class VeDirectClient(
     private val logrepositConfiguration: LogrepositConfiguration,
     private val veDirectSerialClient: VeDirectSerialClient,
     @Qualifier("singleThreadPoolTaskExecutor") private val threadPoolTaskExecutor: ThreadPoolTaskExecutor,
-    private val logrepositApiService: LogrepositApiService) : VeDirectEventListener {
+    private val logrepositApiService: LogrepositApiService
+) : VeDirectEventListener {
 
     private val lastUpdates = mutableMapOf<VeDirectField, Instant>()
 
@@ -26,9 +27,7 @@ class VeDirectClient(
         veDirectSerialClient.startListening()
     }
 
-    override fun onVeDirectTextProtocolUpdate(textData: Map<String, String>) {
-        val receivedAt = Instant.now()
-
+    override fun onVeDirectTextProtocolUpdate(receivedAt: Instant, textData: Map<String, String>) {
         threadPoolTaskExecutor.submit {
             processTextData(receivedAt, textData)
         }

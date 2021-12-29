@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class VeDirectReaderServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<VeDirectReaderServiceApplication>(*args)
+    runApplication<VeDirectReaderServiceApplication>(*args)
 }

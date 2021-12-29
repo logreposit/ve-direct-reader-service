@@ -1,15 +1,15 @@
 package com.logreposit.vedirectreaderservice.services.logreposit
 
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IngressDefinition
-import com.logreposit.vedirectreaderservice.services.logreposit.mappers.LogrepositIngressDataMapper
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectValueType
 import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.logger
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.DataType
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FieldDefinition
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IngressDefinition
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.MeasurementDefinition
+import com.logreposit.vedirectreaderservice.services.logreposit.mappers.LogrepositIngressDataMapper
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -26,22 +26,22 @@ import java.time.temporal.ChronoUnit
 
 @Service
 class LogrepositApiService(
-        restTemplateBuilder: RestTemplateBuilder,
-        private val logrepositConfiguration: LogrepositConfiguration
+    restTemplateBuilder: RestTemplateBuilder,
+    private val logrepositConfiguration: LogrepositConfiguration
 ) {
     private val logger = logger()
     private val logrepositIngressDataMapper = LogrepositIngressDataMapper(logrepositConfiguration)
 
     private val restTemplate: RestTemplate = restTemplateBuilder
-            .setConnectTimeout(Duration.of(10, ChronoUnit.SECONDS))
-            .setReadTimeout(Duration.of(10, ChronoUnit.SECONDS))
-            .build()
+        .setConnectTimeout(Duration.of(10, ChronoUnit.SECONDS))
+        .setReadTimeout(Duration.of(10, ChronoUnit.SECONDS))
+        .build()
 
     @Retryable(
-            value = [RestClientException::class],
-            exclude = [HttpClientErrorException.UnprocessableEntity::class],
-            maxAttempts = 5,
-            backoff = Backoff(delay = 500)
+        value = [RestClientException::class],
+        exclude = [HttpClientErrorException.UnprocessableEntity::class],
+        maxAttempts = 5,
+        backoff = Backoff(delay = 500)
     )
     fun pushData(receivedAt: Instant, veDirectData: List<VeDirectReading<Any>>) {
         val data = logrepositIngressDataMapper.toLogrepositIngressDto(

@@ -38,13 +38,13 @@ object VeDirectMapper {
         return when (veDirectValue.lowercase(Locale.US)) {
             "on" -> true
             "off" -> false
-            else -> throw java.lang.IllegalArgumentException("Expected VE.Direct on/off value (case insensitive) but got veDirectValue=${veDirectValue}")
+            else -> throw java.lang.IllegalArgumentException("Expected VE.Direct on/off value (case insensitive) but got veDirectValue=$veDirectValue")
         }
     }
 
-    private fun parseNumberFromHexString(hex: String) : Long {
+    private fun parseNumberFromHexString(hex: String): Long {
         if (!hex.lowercase().startsWith("0x")) {
-            throw IllegalArgumentException("HEX values must start with 0x! Got argument hex=${hex}")
+            throw IllegalArgumentException("HEX values must start with 0x! Got argument hex=$hex")
         }
 
         return hex.removePrefix("0x").toLong(radix = 16)

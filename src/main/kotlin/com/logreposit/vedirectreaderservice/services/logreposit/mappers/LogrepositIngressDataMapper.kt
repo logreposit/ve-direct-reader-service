@@ -3,28 +3,28 @@ package com.logreposit.vedirectreaderservice.services.logreposit.mappers
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectField
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectNumberReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectOnOffReading
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IngressData
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IntegerField
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Reading
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.StringField
-import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Tag
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectReading
 import com.logreposit.vedirectreaderservice.communication.vedirect.VeDirectTextReading
 import com.logreposit.vedirectreaderservice.configuration.LogrepositConfiguration
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Field
 import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.FloatField
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IngressData
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.IntegerField
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Reading
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.StringField
+import com.logreposit.vedirectreaderservice.services.logreposit.dtos.ingress.Tag
 import java.time.Instant
 
 class LogrepositIngressDataMapper(private val logrepositConfiguration: LogrepositConfiguration) {
     fun toLogrepositIngressDto(date: Instant, address: String, data: List<VeDirectReading<Any>>) = IngressData(
-            readings = listOf(
-                    Reading(
-                            date = date,
-                            measurement = "data",
-                            tags = listOf(Tag(name = "device_address", value = address)),
-                            fields = data.flatMap { transformVeDirectReading(it) }
-                    )
+        readings = listOf(
+            Reading(
+                date = date,
+                measurement = "data",
+                tags = listOf(Tag(name = "device_address", value = address)),
+                fields = data.flatMap { transformVeDirectReading(it) }
             )
+        )
     )
 
     private fun transformVeDirectReading(reading: VeDirectReading<Any>): List<Field> {
@@ -36,7 +36,7 @@ class LogrepositIngressDataMapper(private val logrepositConfiguration: Logreposi
             is VeDirectTextReading -> StringField(name = name, value = reading.value)
         }
 
-        val textRepresentationField = reading.getTextRepresentation()?.let { StringField(name = "${name}_str", value = it)}
+        val textRepresentationField = reading.getTextRepresentation()?.let { StringField(name = "${name}_str", value = it) }
         val legacyField = getLegacyReading(reading)
 
         return listOfNotNull(field, textRepresentationField, legacyField)
