@@ -29,7 +29,7 @@ This service ships as a docker image and has to be configured via environment va
 | LOGREPOSIT_APIBASEURL                    | https://api.logreposit.com |                                                                                        |
 | LOGREPOSIT_DEVICETOKEN                   | **INVALID**                | needs to be changed!                                                                   | 
 | LOGREPOSIT_INCLUDELEGACYFIELDS           | false                      | set to true to enable backwards-compatibility to bmv-reader-service                    | 
-| LOGREPOSIT_MINIMUMUPDATEINTERVALINMILLIS | 10000                      | minimum update interval in seconds, set to `0` to push on every VE.Direct Text update. |
+| LOGREPOSIT_MINIMUMUPDATEINTERVALINMILLIS | 10000                      | minimum update interval in milliseconds, set to `0` to push on every VE.Direct Text update. |
 | LOGREPOSIT_ADDRESS                       | 1                          | set to some other value if you have multiple devices                                   |
 
 
