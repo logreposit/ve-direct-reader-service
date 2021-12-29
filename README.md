@@ -14,6 +14,7 @@ The ve-direct-reader-service reads measurement and fault data from Victron Energ
 Logreposit API.
 
 The implementation has been tested with a BMV-700 battery monitor and a SmartSolar MPPT 100/50 solar charge controller, however, all Victron Energy devices with a VE.Direct port should be supported.  
+All measurement values described in the official VE.Direct text protocol documentation, as of beginning of about December 2021, have been implemented and can be found [here](https://github.com/logreposit/ve-direct-reader-service/blob/develop/src/main/kotlin/com/logreposit/vedirectreaderservice/communication/vedirect/VeDirectTextModel.kt). 
 
 The `ve-direct-reader-service` is a Spring Boot project and the library [`com.fazecast.jSerialComm`](https://github.com/Fazecast/jSerialComm) 
 is in use for the serial communication.
