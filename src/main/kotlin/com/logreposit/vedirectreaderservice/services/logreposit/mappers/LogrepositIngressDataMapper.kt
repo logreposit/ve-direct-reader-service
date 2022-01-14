@@ -30,6 +30,10 @@ class LogrepositIngressDataMapper(private val logrepositConfiguration: Logreposi
     private fun transformVeDirectReading(reading: VeDirectReading<Any>): List<Field> {
         val name = reading.field.logrepositName
 
+        if (shouldBeIgnored(name)) {
+            return listOf()
+        }
+
         val field = when (reading) {
             is VeDirectNumberReading -> IntegerField(name = name, value = reading.value)
             is VeDirectOnOffReading -> IntegerField(name = name, value = boolToLong(reading.value))
@@ -41,6 +45,8 @@ class LogrepositIngressDataMapper(private val logrepositConfiguration: Logreposi
 
         return listOfNotNull(field, textRepresentationField, legacyField)
     }
+
+    private fun shouldBeIgnored(logrepositName: String) = ((logrepositConfiguration.ignoredFields ?: listOf()).contains(logrepositName))
 
     private fun boolToLong(bool: Boolean) = when (bool) {
         true -> 1L
