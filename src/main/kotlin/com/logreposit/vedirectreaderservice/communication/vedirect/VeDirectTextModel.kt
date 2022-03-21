@@ -98,6 +98,7 @@ enum class VeDirectField(val veName: String, val valueType: VeDirectValueType, v
 }
 
 enum class VeDirectOffReason(val code: Long) {
+    NONE(0), // 0x00000000
     NO_INPUT_POWER(1), // 0x00000001
     SWITCHED_OFF_POWER_SWITCH(2), // 0x00000002
     SWITCHED_OFF_DEVICE_MODE_REGISTER(4), // 0x00000004
