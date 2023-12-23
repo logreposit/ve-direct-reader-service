@@ -2,8 +2,8 @@ version: 2.1
 
 
 orbs:
-  maven: circleci/maven@1.2.0
-  codecov: codecov/codecov@3.2.2
+  maven: circleci/maven@1.4.1
+  codecov: codecov/codecov@3.3.0
 
 
 executors:
@@ -11,7 +11,7 @@ executors:
     environment:
       _JAVA_OPTIONS: "-Xmx512m"
     docker:
-      - image: cimg/openjdk:17.0
+      - image: cimg/openjdk:21.0
 
 
 jobs:
@@ -105,7 +105,8 @@ jobs:
       - run:
           name: Setup buildx
           command: |
-            docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+            docker context create buildx-build
+            docker buildx create --use buildx-build
       - run:
           name: Build and Push
           command: |
@@ -150,3 +151,4 @@ workflows:
           requires:
             - compile
             - tests
+

@@ -13,11 +13,10 @@ object VeDirectMapper {
     }
 
     private fun logUnknownFields(veDirectTextData: Map<String, String>) = veDirectTextData
-        .map { it.key }
-        .filterNot { VeDirectField.exists(it) }
+        .filterNot { VeDirectField.exists(it.key) }
         .also {
             if (it.isNotEmpty()) {
-                log.info("The following VE.Direct fields got from the device are not (yet) implemented: $it")
+                log.info("The following VE.Direct fields got from the device are not (yet) implemented: $it.")
             }
         }
 
