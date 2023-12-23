@@ -106,7 +106,7 @@ jobs:
           name: Setup buildx
           command: |
             docker context create buildx-build
-            #docker buildx create --use buildx-build
+            docker buildx create --use buildx-build
       - run:
           name: Build and Push
           command: |
