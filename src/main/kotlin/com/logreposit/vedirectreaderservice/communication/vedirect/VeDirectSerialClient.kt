@@ -55,7 +55,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
             val readBuffer = ByteArray(bytesAvailable)
 
-            serialPort.readBytes(readBuffer, readBuffer.size.toLong())
+            serialPort.readBytes(readBuffer, readBuffer.size)
 
             for (b in readBuffer) {
                 processByte(b)
@@ -75,7 +75,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
     }
 
     fun sendCommand(byteArray: ByteArray): Int {
-        return serialPort.writeBytes(byteArray, byteArray.size.toLong())
+        return serialPort.writeBytes(byteArray, byteArray.size)
     }
 
     private fun configureSerialPort() {
