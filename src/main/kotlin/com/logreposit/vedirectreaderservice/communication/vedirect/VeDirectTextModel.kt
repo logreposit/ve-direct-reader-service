@@ -2,6 +2,10 @@ package com.logreposit.vedirectreaderservice.communication.vedirect
 
 sealed class VeDirectReading<out T>(val field: VeDirectField, val value: T) {
     open fun getTextRepresentation(): String? = null
+
+    override fun toString(): String {
+        return "VeDirectReading(field=$field, value=$value)"
+    }
 }
 
 class VeDirectNumberReading(field: VeDirectField, value: Long) : VeDirectReading<Long>(field, value) {
