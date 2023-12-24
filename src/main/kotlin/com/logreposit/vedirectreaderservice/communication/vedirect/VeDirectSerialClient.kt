@@ -4,9 +4,10 @@ import com.fazecast.jSerialComm.SerialPort
 import com.logreposit.vedirectreaderservice.configuration.VeDirectConfiguration
 import com.logreposit.vedirectreaderservice.logger
 import org.springframework.stereotype.Service
+import java.time.Instant
 
 interface VeDirectEventListener {
-    fun onVeDirectTextProtocolUpdate(textData: Map<String, String>)
+    fun onVeDirectTextProtocolUpdate(receivedAt: Instant, textData: Map<String, String>)
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
@@ -54,7 +55,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
             val readBuffer = ByteArray(bytesAvailable)
 
-            serialPort.readBytes(readBuffer, readBuffer.size.toLong())
+            serialPort.readBytes(readBuffer, readBuffer.size)
 
             for (b in readBuffer) {
                 processByte(b)
@@ -74,7 +75,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
     }
 
     fun sendCommand(byteArray: ByteArray): Int {
-        return serialPort.writeBytes(byteArray, byteArray.size.toLong())
+        return serialPort.writeBytes(byteArray, byteArray.size)
     }
 
     private fun configureSerialPort() {
@@ -106,12 +107,12 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
 
     private fun inHex(byte: Byte) {
         logger.debug("HEX ==> IN HEX MODE!")
-        //inputBuffer.clear()
+        // inputBuffer.clear()
 
         if (byte != LF) {
             hexBuffer.add(byte)
 
-            return;
+            return
         }
 
         inputBuffer.clear()
@@ -163,7 +164,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
             checksum = (checksum - b).toUByte()
         }
 
-        return (checksum == 0.toUByte());
+        return (checksum == 0.toUByte())
     }
 
     private fun inWaitBegin(byte: Byte) {
@@ -216,7 +217,7 @@ class VeDirectSerialClient(veDirectConfiguration: VeDirectConfiguration) {
         val allRead = inputBuffer.sum()
 
         if (allRead % 256 == 0) {
-            eventListeners.forEach { it.onVeDirectTextProtocolUpdate(resultMap.toMap()) }
+            eventListeners.forEach { it.onVeDirectTextProtocolUpdate(Instant.now(), resultMap.toMap()) }
         } else {
             logger.warn("Checksum of VE.Direct block read is invalid.")
         }

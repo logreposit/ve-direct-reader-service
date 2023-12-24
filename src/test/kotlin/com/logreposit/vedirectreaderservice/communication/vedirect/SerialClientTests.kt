@@ -12,8 +12,8 @@ class SerialClientTests {
     class MyListener : VeDirectEventListener {
         private val log = logger()
 
-        override fun onVeDirectTextProtocolUpdate(textData: Map<String, String>) {
-            val dateTime = DateTimeFormatter.ISO_INSTANT.format(Instant.now());
+        override fun onVeDirectTextProtocolUpdate(receivedAt: Instant, textData: Map<String, String>) {
+            val dateTime = DateTimeFormatter.ISO_INSTANT.format(receivedAt)
 
             log.info("$dateTime => Received VE.Direct Text Protocol Event: $textData")
         }
@@ -56,7 +56,7 @@ class SerialClientTests {
 
         Thread.sleep(15000)
 
-        var i = 0;
+        var i = 0
 
         val command = ":451\n"
         val commandBytes = stringToASCIIBytes(command)
