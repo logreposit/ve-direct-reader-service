@@ -1,7 +1,5 @@
 # ve-direct-reader-service
 
-### Still work in progress! Will be available soon.
-
 | branch | CI build | test coverage |
 |--------|:--------:|--------------:|
 | master  | [![CircleCI](https://circleci.com/gh/logreposit/ve-direct-reader-service/tree/master.svg?style=shield)](https://circleci.com/gh/logreposit/ve-direct-reader-service/tree/master)   | [![codecov.io](https://codecov.io/gh/logreposit/ve-direct-reader-service/branch/master/graphs/badge.svg)](https://codecov.io/gh/logreposit/ve-direct-reader-service/branch/master/graphs/badge.svg)   |
